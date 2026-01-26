@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('403')"/>
+    <link th:href="@{/css/pear/error.css}" rel="stylesheet"/>
+    <link th:href="@{/lib/button/button.css}" rel="stylesheet"/>
+    <style>
+        .pear-btn-primary {
+            background-color: #36b368!important;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <img th:src="@{/images/403.svg}" alt="">
+    <div class="content-r">
+        <h1>403</h1>
+        <p>抱歉，你无权访问该页面</p>
+        <button class="pear-btn pear-btn-primary" id="closeBtn403">返回首页</button>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script type="text/javascript" th:src="@{/js/config.js}"></script>
+<script>
+    $("#closeBtn403").click(function(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);//关闭当前页
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vsu.iscr.mapper.CarMapper">
+
+    <resultMap id="CarResult" type="com.vsu.iscr.domain.Car">
+        <id property="carId" column="car_id"/>
+        <result property="brand" column="brand"/>
+        <result property="series" column="series"/>
+        <result property="year" column="year"/>
+        <result property="model" column="model"/>
+        <result property="category" column="category"/>
+        <result property="displacement" column="displacement"/>
+        <result property="boxCount" column="box_count"/>
+        <result property="seatCount" column="seat_count"/>
+        <result property="transmission" column="transmission"/>
+        <result property="doorCount" column="door_count"/>
+        <result property="fuelType" column="fuel_type"/>
+        <result property="fuelLabel" column="fuel_label"/>
+        <result property="tankCapacity" column="tank_capacity"/>
+        <result property="maintenanceMileage" column="maintenance_mileage"/>
+        <result property="dailyRent" column="daily_rent"/>
+        <result property="status" column="status"/>
+        <result property="imagePath" column="image_path"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectCarVo">
+        SELECT car_id, brand, series, year, model, category, displacement, box_count,
+               seat_count, transmission, door_count, fuel_type, fuel_label, tank_capacity,
+               maintenance_mileage, daily_rent, status, image_path, create_time, update_time
+        FROM tb_car
+    </sql>
+
+    <!-- 查询所有汽车 -->
+    <select id="selectAllCars" resultMap="CarResult">
+        <include refid="selectCarVo"/>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据ID查询汽车 -->
+    <select id="selectCarById" resultMap="CarResult">
+        <include refid="selectCarVo"/>
+        WHERE car_id = #{carId}
+    </select>
+
+    <!-- 根据条件查询汽车列表 -->
+    <select id="selectCarList" parameterType="com.vsu.iscr.domain.Car" resultMap="CarResult">
+        <include refid="selectCarVo"/>
+        <where>
+            <if test="brand != null and brand != ''">
+                AND brand LIKE CONCAT('%', #{brand}, '%')
+            </if>
+            <if test="series != null and series != ''">
+                AND series LIKE CONCAT('%', #{series}, '%')
+            </if>
+            <if test="category != null and category != ''">
+                AND category = #{category}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 新增汽车 -->
+    <insert id="insertCar" parameterType="com.vsu.iscr.domain.Car" useGeneratedKeys="true" keyProperty="carId">
+        INSERT INTO tb_car (
+            brand, series, year, model, category, displacement, box_count, seat_count,
+            transmission, door_count, fuel_type, fuel_label, tank_capacity, maintenance_mileage,
+            daily_rent, status, image_path
+        ) VALUES (
+            #{brand}, #{series}, #{year}, #{model}, #{category}, #{displacement}, #{boxCount},
+            #{seatCount}, #{transmission}, #{doorCount}, #{fuelType}, #{fuelLabel},
+            #{tankCapacity}, #{maintenanceMileage}, #{dailyRent}, #{status}, #{imagePath}
+        )
+    </insert>
+
+    <!-- 更新汽车信息 -->
+    <update id="updateCar" parameterType="com.vsu.iscr.domain.Car">
+        UPDATE tb_car
+        <set>
+            <if test="brand != null and brand != ''">brand = #{brand},</if>
+            <if test="series != null and series != ''">series = #{series},</if>
+            <if test="year != null and year != ''">year = #{year},</if>
+            <if test="model != null and model != ''">model = #{model},</if>
+            <if test="category != null and category != ''">category = #{category},</if>
+            <if test="displacement != null and displacement != ''">displacement = #{displacement},</if>
+            <if test="boxCount != null and boxCount != ''">box_count = #{boxCount},</if>
+            <if test="seatCount != null">seat_count = #{seatCount},</if>
+            <if test="transmission != null and transmission != ''">transmission = #{transmission},</if>
+            <if test="doorCount != null">door_count = #{doorCount},</if>
+            <if test="fuelType != null and fuelType != ''">fuel_type = #{fuelType},</if>
+            <if test="fuelLabel != null and fuelLabel != ''">fuel_label = #{fuelLabel},</if>
+            <if test="tankCapacity != null and tankCapacity != ''">tank_capacity = #{tankCapacity},</if>
+            <if test="maintenanceMileage != null and maintenanceMileage != ''">maintenance_mileage = #{maintenanceMileage},</if>
+            <if test="dailyRent != null">daily_rent = #{dailyRent},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="imagePath != null">image_path = #{imagePath},</if>
+        </set>
+        WHERE car_id = #{carId}
+    </update>
+
+    <!-- 删除汽车 -->
+    <delete id="deleteCarById">
+        DELETE FROM tb_car WHERE car_id = #{carId}
+    </delete>
+
+    <!-- 批量删除汽车 -->
+    <delete id="deleteCarByIds">
+        DELETE FROM tb_car WHERE car_id IN
+        <foreach collection="carIds" item="carId" open="(" separator="," close=")">
+            #{carId}
+        </foreach>
+    </delete>
+
+    <!-- 更新汽车状态 -->
+    <update id="updateCarStatus">
+        UPDATE tb_car SET status = #{status} WHERE car_id = #{carId}
+    </update>
+
+</mapper>
