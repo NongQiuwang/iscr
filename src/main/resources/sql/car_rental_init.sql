@@ -70,13 +70,13 @@ ON DUPLICATE KEY UPDATE `user_name`='user1';
 INSERT INTO `tb_car` (`brand`, `series`, `year`, `model`, `category`, `displacement`, 
   `box_count`, `seat_count`, `transmission`, `door_count`, `fuel_type`, `fuel_label`, 
   `tank_capacity`, `maintenance_mileage`, `daily_rent`, `status`) VALUES
-('奥迪', 'A6L', '2024款', '45 TFSI quattro 豪华动感型', '中大型车', '2.0T', 
-  '三厢', 5, '自动', 4, '汽油', '95号', '73L', '5000公里', 500.00, 0),
-('宝马', '5系', '2024款', '530Li 尊享型M运动套装', '中大型车', '2.0T', 
-  '三厢', 5, '自动', 4, '汽油', '95号', '68L', '10000公里', 550.00, 0),
-('奔驰', 'E级', '2024款', 'E 300 L 豪华型', '中大型车', '2.0T', 
-  '三厢', 5, '自动', 4, '汽油', '95号', '66L', '10000公里', 600.00, 0),
-('特斯拉', 'Model 3', '2024款', '后驱版', '中型车', '电动', 
-  '三厢', 5, '自动', 4, '电动', '-', '-', '20000公里', 400.00, 0),
-('丰田', '凯美瑞', '2024款', '2.0E 精英版', '中型车', '2.0L', 
-  '三厢', 5, '自动', 4, '汽油', '92号', '60L', '5000公里', 300.00, 0);
+('Audi', 'A6L', '2024 Model', '45 TFSI quattro Luxury Dynamic', 'Mid-Large Sedan', '2.0T',
+  'threeCompartment', 5, 'automatic', 4, 'Gasoline', '95 Octane', '73L', '5000KM', 500.00, 0),
+('BMW', '5 Series', '2024 Model', '530Li Exclusive M Sport', 'Mid-Large Sedan', '2.0T',
+  'threeCompartment', 5, 'automatic', 4, 'Gasoline', '95 Octane', '68L', '10000KM', 550.00, 0),
+('Mercedes-Benz', 'E-Class', '2024 Model', 'E 300 L Luxury', 'Mid-Large Sedan', '2.0T',
+  'threeCompartment', 5, 'automatic', 4, 'Gasoline', '95 Octane', '66L', '10000KM', 600.00, 0),
+('Tesla', 'Model 3', '2024 Model', 'RWD Edition', 'Mid-size Sedan', 'Electric',
+  'threeCompartment', 5, 'automatic', 4, 'Electric', '-', '-', '20000KM', 400.00, 0),
+('Toyota', 'Camry', '2024 Model', '2.0E Elite Edition', 'Mid-size Sedan', '2.0L',
+  'threeCompartment', 5, 'automatic', 4, 'Gasoline', '92 Octane', '60L', '5000KM', 300.00, 0);
