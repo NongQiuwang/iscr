@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vsu.iscr.mapper.UsersMapper">
+
+    <resultMap id="UsersResult" type="com.vsu.iscr.domain.Users">
+        <id property="uId" column="u_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="phone" column="phone"/>
+        <result property="role" column="role"/>
+    </resultMap>
+
+    <sql id="selectUsersVo">
+        SELECT u_id, user_name, email, password, phone, role
+        FROM tb_users
+    </sql>
+
+    <!-- 根据用户名查找用户 -->
+    <select id="findByUsername" resultMap="UsersResult">
+        <include refid="selectUsersVo"/>
+        WHERE user_name = #{username}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAllUsers" resultMap="UsersResult">
+        <include refid="selectUsersVo"/>
+        ORDER BY u_id DESC
+    </select>
+
+    <!-- 根据ID查询用户 -->
+    <select id="selectUserById" resultMap="UsersResult">
+        <include refid="selectUsersVo"/>
+        WHERE u_id = #{userId}
+    </select>
+
+    <!-- 新增用户 -->
+    <insert id="insertUser" parameterType="com.vsu.iscr.domain.Users" useGeneratedKeys="true" keyProperty="uId">
+        INSERT INTO tb_users (user_name, email, password, phone, role)
+        VALUES (#{userName}, #{email}, #{password}, #{phone}, #{role})
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="com.vsu.iscr.domain.Users">
+        UPDATE tb_users
+        <set>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="email != null and email != ''">email = #{email},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="role != null">role = #{role},</if>
+        </set>
+        WHERE u_id = #{uId}
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUserById">
+        DELETE FROM tb_users WHERE u_id = #{userId}
+    </delete>
+
+</mapper>
