@@ -144,7 +144,7 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResultVo cancelReservation(@PathVariable("id") Integer id) {
         try {
-            int result = reservationService.deleteReservationById(id);
+            int result = reservationService.cancelReservation(id);
             if (result > 0) {
                 return ResultVoUtil.success("取消预约成功");
             }
