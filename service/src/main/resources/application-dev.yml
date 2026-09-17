@@ -6,7 +6,6 @@ vsu:
   profile: D:/iscr-images
   prefix: /iscr-images
   addressEnabled: false
-  #sofficePath: C:/Program Files/LibreOffice   D:/software/LibreOffice
   sofficePath: D:/software/LibreOffice
 
 # 数据源配置

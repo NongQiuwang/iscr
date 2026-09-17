@@ -26,6 +26,16 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public Users findByEmail(String email) {
+        return usersMapper.findByEmail(email);
+    }
+
+    @Override
+    public Users findByPhone(String phone) {
+        return usersMapper.findByPhone(phone);
+    }
+
+    @Override
     public int insertUser(Users user) {
         return usersMapper.insertUser(user);
     }
@@ -43,6 +53,11 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public int updateUser(Users user) {
         return usersMapper.updateUser(user);
+    }
+
+    @Override
+    public int updatePassword(Integer userId, String password) {
+        return usersMapper.updatePassword(userId, password);
     }
 
     @Override

@@ -19,6 +19,16 @@ public interface UsersMapper {
     Users findByUsername(@Param("username") String username);
 
     /**
+     * 根据邮箱查找用户
+     */
+    Users findByEmail(@Param("email") String email);
+
+    /**
+     * 根据手机号查找用户
+     */
+    Users findByPhone(@Param("phone") String phone);
+
+    /**
      * 新增用户
      */
     int insertUser(Users user);
@@ -37,6 +47,11 @@ public interface UsersMapper {
      * 更新用户信息
      */
     int updateUser(Users user);
+
+    /**
+     * 更新用户密码
+     */
+    int updatePassword(@Param("userId") Integer userId, @Param("password") String password);
 
     /**
      * 删除用户

@@ -67,4 +67,9 @@ public interface ReservationService {
      */
 
      int updateReservationStatus(Integer reservationId, Integer status) ;
+
+    /**
+     * 取消预约（软取消：状态改为已取消并恢复车辆可租）
+     */
+     int cancelReservation(Integer reservationId) ;
 }

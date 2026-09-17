@@ -22,6 +22,18 @@
         WHERE user_name = #{username}
     </select>
 
+    <!-- 根据邮箱查找用户 -->
+    <select id="findByEmail" resultMap="UsersResult">
+        <include refid="selectUsersVo"/>
+        WHERE email = #{email}
+    </select>
+
+    <!-- 根据手机号查找用户 -->
+    <select id="findByPhone" resultMap="UsersResult">
+        <include refid="selectUsersVo"/>
+        WHERE phone = #{phone}
+    </select>
+
     <!-- 查询所有用户 -->
     <select id="selectAllUsers" resultMap="UsersResult">
         <include refid="selectUsersVo"/>
@@ -51,6 +63,11 @@
             <if test="role != null">role = #{role},</if>
         </set>
         WHERE u_id = #{uId}
+    </update>
+
+    <!-- 更新用户密码 -->
+    <update id="updatePassword">
+        UPDATE tb_users SET password = #{password} WHERE u_id = #{userId}
     </update>
 
     <!-- 删除用户 -->

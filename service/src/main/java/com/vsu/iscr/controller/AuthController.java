@@ -1,9 +1,11 @@
 package com.vsu.iscr.controller;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.vsu.iscr.core.vo.ResultVo;
 import com.vsu.iscr.domain.Users;
 import com.vsu.iscr.service.UsersService;
 import com.vsu.iscr.utils.ResultVoUtil;
+import com.vsu.iscr.utils.Validators;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +15,6 @@ import java.util.Map;
 
 /**
  * 认证控制器
- * 
- * @author iscr
  */
 @Slf4j
 @RestController
@@ -31,19 +31,19 @@ public class AuthController {
     @PostMapping("/login")
     public ResultVo login(@RequestBody Users loginUser) {
         try {
-            // 查询用户
-            Users user = usersService.findByUsername(loginUser.getUserName());
+            if (Validators.isBlank(loginUser.getUserName()) || Validators.isBlank(loginUser.getPassword())) {
+                return ResultVoUtil.error("用户名和密码不能为空");
+            }
 
+            Users user = usersService.findByUsername(loginUser.getUserName().trim());
             if (user == null) {
                 return ResultVoUtil.error("用户不存在");
             }
 
-            // 验证密码（实际项目中应该使用加密密码）
-            if (!user.getPassword().equals(loginUser.getPassword())) {
+            if (!passwordMatches(loginUser.getPassword(), user)) {
                 return ResultVoUtil.error("密码错误");
             }
 
-            // 返回用户信息（不包含密码）
             Map<String, Object> data = new HashMap<>();
             data.put("userId", user.getUId());
             data.put("username", user.getUserName());
@@ -64,18 +64,54 @@ public class AuthController {
     @PostMapping("/register")
     public ResultVo register(@RequestBody Users user) {
         try {
-            // 检查用户名是否已存在
-            Users existUser = usersService.findByUsername(user.getUserName());
-            if (existUser != null) {
+            String userName = user.getUserName() == null ? null : user.getUserName().trim();
+            String password = user.getPassword();
+            String email = user.getEmail() == null ? null : user.getEmail().trim();
+            String phone = user.getPhone() == null ? null : user.getPhone().trim();
+
+            if (Validators.isBlank(userName)) {
+                return ResultVoUtil.error("用户名不能为空");
+            }
+            if (userName.length() < 2 || userName.length() > 20) {
+                return ResultVoUtil.error("用户名长度需在2-20个字符之间");
+            }
+            if (Validators.isBlank(password)) {
+                return ResultVoUtil.error("密码不能为空");
+            }
+            if (password.length() < 6 || password.length() > 64) {
+                return ResultVoUtil.error("密码长度需在6-64位之间");
+            }
+            if (Validators.isBlank(email)) {
+                return ResultVoUtil.error("邮箱不能为空");
+            }
+            if (!Validators.isEmail(email)) {
+                return ResultVoUtil.error("邮箱格式不正确");
+            }
+            if (Validators.isBlank(phone)) {
+                return ResultVoUtil.error("手机号不能为空");
+            }
+            if (!Validators.isPhone(phone)) {
+                return ResultVoUtil.error("手机号格式不正确");
+            }
+
+            if (usersService.findByUsername(userName) != null) {
                 return ResultVoUtil.error("用户名已存在");
             }
-
-            // 设置默认角色为普通用户
-            if (user.getRole() == null) {
-                user.setRole(0);
+            if (usersService.findByEmail(email) != null) {
+                return ResultVoUtil.error("邮箱已被注册");
+            }
+            if (usersService.findByPhone(phone) != null) {
+                return ResultVoUtil.error("手机号已被注册");
             }
 
-            // 保存用户（实际项目中应该加密密码）
+            user.setUserName(userName);
+            user.setEmail(email);
+            user.setPhone(phone);
+            // 密码加密存储
+            user.setPassword(BCrypt.hashpw(password));
+            // 公开注册一律为普通用户，防止越权
+            user.setRole(0);
+
             int result = usersService.insertUser(user);
             if (result > 0) {
                 return ResultVoUtil.success("注册成功");
@@ -93,5 +129,24 @@ public class AuthController {
     @PostMapping("/logout")
     public ResultVo logout() {
         return ResultVoUtil.success("登出成功");
+    }
+
+    /**
+     * 校验密码。
+     * 兼容历史明文密码：首次用明文校验通过后自动升级为 BCrypt 加密。
+     */
+    private boolean passwordMatches(String rawPassword, Users user) {
+        String stored = user.getPassword();
+        if (stored == null) {
+            return false;
+        }
+        if (stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$")) {
+            return BCrypt.checkpw(rawPassword, stored);
+        }
+        if (stored.equals(rawPassword)) {
+            usersService.updatePassword(user.getUId(), BCrypt.hashpw(rawPassword));
+            return true;
+        }
+        return false;
     }
 }
